@@ -1,0 +1,16 @@
+{
+  "name": "dakiya",
+  "version": "1.0.0",
+  "description": "Dakiya: Postman collections convertor",
+  "author": "Rupesh More",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rupeshmore/dakiya"
+  },
+  "keywords": [
+    "dakiya",
+    "postman",
+    "artillery"
+  ],
+  "license": "MIT"
+}
