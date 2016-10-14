@@ -1,7 +1,7 @@
 {
   "name": "dakiya",
   "version": "1.0.0",
-  "description": "Dakiya: Postman collections convertor",
+    "description": "Dakiya: Postman collections convertor",
   "author": "Rupesh More",
   "repository": {
     "type": "git",

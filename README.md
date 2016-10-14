@@ -4,8 +4,6 @@ Dakiya (डाकिया) means postman in Hindi.
 
 This app converts [Postman](https://www.getpostman.com) collection to other scripts.
 
-## App Demo
-[Dakiya (डाकिया) Video Demo](https://youtu.be/wpwDhpZSP8k) converting postman api's to scripts.
 
 ## Getting Started
 
