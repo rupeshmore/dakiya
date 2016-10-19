@@ -50,10 +50,9 @@ Look at the tool documentation to make relevant changes.
 2. The app has been created with limited collection examples and postman documentation. If there are bugs kindly log issues.
 
 ## TODO
-1. Convert test script postman variables within final script.
-2. Full support for postman url as an object.
-3. [Gatling](http://gatling.io/#/) load testing tool script generation.
-4. [Loadrunner](http://www8.hp.com/nz/en/software-solutions/loadrunner-load-testing/) load testing tool script generation.
+1. Full support for postman url as an object.
+2. [Gatling](http://gatling.io/#/) load testing tool script generation.
+3. [Loadrunner](http://www8.hp.com/nz/en/software-solutions/loadrunner-load-testing/) load testing tool script generation.
 
 ## License
 MIT License
