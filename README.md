@@ -7,7 +7,7 @@ Dakiya collects [Postman](https://www.getpostman.com) collections, sorts and del
 NOTE: This is an attempt to provide conversion utility for postman api's. This project is in it's early stage. It has not been tested in complex postman api's.
 
 ## Demo
-[Dakiya Demo](https://dakiya-tfshaipvfy.now.sh)
+[Dakiya Demo](https://dakiya-xwfvxmbdfi.now.sh)
 
 ## Getting Started
 
