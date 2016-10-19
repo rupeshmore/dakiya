@@ -1,7 +1,6 @@
 <html>
   <head>
-    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">-->
+    <title>Dakiya</title>
     <link rel="stylesheet" href="css/material-icon-fonts.css" >
     <link rel="stylesheet" href="css/materialize.min.css">
     <link rel="stylesheet" href="css/ribbons.css">
@@ -11,7 +10,9 @@
       width: 100%;
       overflow-x: auto;
     }
-
+    h1 {
+      font-family: monospace;;
+    }
   </style>
   </head>
   <body>
@@ -19,22 +20,18 @@
     <!-- Navbar goes here -->
     <!--<div class="row amber lighten-1">
       <center><h1>Dakiya</h1></center>
-      <h6><center>Convert PostMan Collections<center></h6>
     </div>-->
     <!-- Page Layout here -->
     <div class="row">
 
-    <div class="col s2"> <!-- Note that "m4 l3" was added -->
-      <!-- Grey navigation panel
-
-      This content will be:
-      3-columns-wide on large screens,
-      4-columns-wide on medium screens,
-      12-columns-wide on small screens  -->
+    <div class="col s12 m4 l3"> <!-- Note that "m4 l3" was added -->
+      <!-- Grey navigation panel -->
+      <p style="font-size:9px">
+      </p>
       <div class="row">
         <div class="col s12 orange darken-2 lighten-1">
           <center><h1 class="bold white-text">Dakiya</h1></center>
-          <h6><center class="light small white-text">PostMan Collections Convertor<center></h6>
+          <h6><center class="light small white-text"  style="font-style:italic">collects, sorts and delivers <strike>mail</strike><br><br>transformed Postman collections<br><center></h6>
         </div>
       </div>
 
@@ -63,32 +60,17 @@
       <br>
       <div class="input-field col s12">
       <select id="toolSelection" class="bottom" onchange="convertPostman(this.value)">
-        <option value="" disabled selected>Choose tool</option>
+        <option value="" selected>Choose Tool</option>
         <option value="artillery">Artillery</option>
         <option value="gatling">Gatling (coming soon)</option>
-        <option value="jmeter">Jmeter (coming soon)</option>
+        <option value="loadrunner">Loadrunner (if legal)</option>
       </select>
-      <label>Tool Select</label>
+      <label>Tool Selection</label>
     </div>
-
-    <!--
-    <button disabled type="button" id="artillery" class="btn btn-primary disabled amber black-text lighten-1 col s8 waves-effect" onclick="generateArtillery()"
-      <a class="waves-effect waves-light btn">
-        <i class="material-icons right">send</i>
-        Artillery</a>
-    </button> -->
 
 
     </div>
-    <div class="col s10"> <!-- Note that "m8 l9" was added -->
-    <!-- Teal page content
-
-    This content will be:
-    9-columns-wide on large screens,
-    8-columns-wide on medium screens,
-    12-columns-wide on small screens  -->
-        <!--<ul class="collection with-header" v-if='openPorts.length > 0 | rewriteRules.length > 0'>-->
-        <!--<pre id="fileDisplayArea"><pre>-->
+    <div class="col s12 m8 l9"> <!-- Note that "m8 l9" was added -->
           <div class="ribbon right green" style="z-index:10">
             <a href="https://github.com/rupeshmore/dakiya">Star &starf; me on GitHub</a>
           </div>
@@ -101,51 +83,66 @@
           <div id="dakiyaGeneratedScript" class="collection">
                 <pre id="fileDisplayArea"><pre>
           </div>
-          <ul id="dakiyaHeader" class="collection s10">
-            <div class="container">
+          <ul id="dakiyaHeader" class="collection" style="margin:margin-right:40px">
+            <div class="col s12" style="padding-left:75px;padding-right:75px">
               <h1 class="header center orange-text">Dakiya</h1>
               <div class="row center">
-                <h5 class="header col s12 bold"><a href="https://www.getpostman.com" target="_blank">Postman</a> Collections Convertor</h5>
+                <h5 class="header col s12 bold">transform <a href="https://www.getpostman.com" target="_blank">Postman</a> collections</h5>
               </div>
-                <!--<h5 class="header center col s12 light green-text">This iframe will be replaced by .</h5>-->
-                <br><br>
               <div class="row">
                 <div class="col s6">
                     <ul class="light">
-                      <li class="collection-header"><h5>Features</h5></li>
-                      <li><span class="green-text">&#10004;</span> <strong>Secure:</strong> All your collections are not uploaded to server.</li>
-                      <li> Dakiya runs in your browser.<li><p></p>
-                      <li><span class="green-text">&#10004;</span> Add postman <mark>environment collection</mark> and dakiya replaces the variables in the script.<li><p></p>
+                      <li class="collection-header italic"><h5>Features</h5></li>
+                      <li><span class="green-text">&#10004;</span> <strong>Secure:</strong> All your collections are not uploaded to server.</li><p></p>
+                      <li><span class="green-text">&#10004;</span> <strong>No Installation:</strong> Runs in the browser.<li><p></p>
+                      <li><span class="green-text">&#10004;</span> Add postman <mark class="orange">environment</mark> collection and dakiya replaces the variables in the script.<li><p></p>
+                      <li><span class="green-text">&#10004;</span> Supports postman collections with multiple folder.<li><p></p>
                       <li><span class="green-text">&#10004;</span> Convert to artillery scripts.<li><p></p>
                       <li><span class="green-text">&#10004;</span> Convert to gatling scripts. (coming soon)<li><p></p>
-                      <li><span class="green-text">&#10004;</span> Convert to jmeter scripts. (coming soon)<li><p></p>
+                      <li><span class="green-text">&#10004;</span> Convert to Load Runner scripts. (If legal, coming soon)<li><p></p>
 
                     </ul>
                 </div>
                 <div class="col s6">
                     <ul class="light">
                       <li class="collection-header"><h5>Getting Started</h5></li>
-                      <li><span>&bull;</span> Upload Postman Environment collection.(optional)</li>
-                      <li><span>&bull;</span> Upload Postman script collection.(mandatory)</li>
-                      <li><span>&bull;</span> Select the tool to convert.</li>
-                      <li><span>&bull;</span> Download the converted script.</li>
+                      <li><span>&bull;</span> Upload Postman environment collection.(optional)</li><p></p>
+                      <li><span>&bull;</span> Upload Postman api collection.(mandatory)</li><p></p>
+                      <li><span>&bull;</span> Select the tool option to convert.</li><p></p>
+                      <li><span>&bull;</span> Download the converted script.</li><p></p>
                     </ul>
                 </div>
               </div>
-              <br><br>
-              <!--<div class="row center">
-                <p class="header col s12 bold">Click here for <a class="center" href="https://youtu.be/wpwDhpZSP8k" target="_blank">Dakiya Demo Video</a></p>
-              </div>-->
-
-              <p class="light center">Note: Dakiya only supports PostMan collections v2 and upwards.</p>
               <br>
+              <div class="row center">
+                <!--<p class="header col s12 bold">Click here for <a class="center" href="./README.md" target="_blank">Dakiya README.md</a></p>
+              </div>-->
+              <p class="light center">Note: Dakiya only supports PostMan collections v2 and upwards.</p>
             </div>
           </ul>
 
           <div id="modal1" class="modal">
             <div class="modal-content">
-              <!--<h4>Feature</h4>-->
-              <p>This feature is coming soon</p>
+              <h4>This feature is coming soon</h4>
+              <!--<p>This feature is coming soon</p>-->
+            </div>
+            <div class="modal-footer">
+              <a class=" modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+            </div>
+          </div>
+          <div id="modal2" class="modal">
+            <div class="modal-content">
+              <h4>Upload a postman api collection</h4>
+              <!--<p>This feature is coming soon</p>-->
+            </div>
+            <div class="modal-footer">
+              <a class=" modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+            </div>
+          </div>
+          <div id="modal3" class="modal">
+            <div class="modal-content">
+              <h4>Postman api collection is not v2 and above</h4>
+              <p>Go to Postman and export all your collections as v2.</p>
             </div>
             <div class="modal-footer">
               <a class=" modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
@@ -158,16 +155,15 @@
     </div>
     <script src="js/jquery-2.2.3.min.js"></script>
     <script src="js/materialize.min.js"></script>
-    <!--<script src="js/vue.min.js"></script>-->
     <script type="text/javascript">
     $(document).ready(function() {
       Materialize.updateTextFields();
-      $('select').material_select();
+      $('#toolSelection').material_select();
       $('#dakiyaGeneratedHeader').hide();
       $('#dakiyaGeneratedScript').hide();
 
     });
     </script>
-    <script src="js/daakiya.js"></script>
+    <script src="js/dakiya.js"></script>
   </body>
 <html>
