@@ -7,16 +7,14 @@
     "type": "git",
     "url": "https://github.com/rupeshmore/dakiya"
   },
-  "dependencies": {
-    "list": "latest"
-  },
-  "scripts": {
-    "start": "list ./"
-  },
   "keywords": [
     "dakiya",
     "postman",
-    "artillery"
+    "artillery",
+    "gatling",
+    "api",
+    "load test",
+    "REST"
   ],
   "license": "MIT"
 }

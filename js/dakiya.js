@@ -12,32 +12,22 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGE.
 */
 
-//TODO
+// TODO
 // Other auth support
-// convert test scripts to validations.
-// add mocha tests
 
-let scriptObject, envCollection, collection, fileName, dakiyaItems, tool, collectionName, artilleryTarget;
+let envCollection, collection, fileName, dakiyaItems, tool, collectionName;
 
-window.onload = function() {
+window.onload = function () {
   let postmanEnvCollection = document.querySelector('#add-postman-env');
   let collectionInput = document.querySelector('#add-collection');
-  let buttonClassAttr = "btn btn-primary orange darken-2 black-text lighten-1 col s8 waves-effect";
-  let fileDisplayHeader = document.querySelector('#fileDisplayHeader');
-  let fileDisplayArea = document.querySelector('#fileDisplayArea');
 
-  postmanEnvCollection.addEventListener('change', function(e) {
+  postmanEnvCollection.addEventListener('change', function (e) {
     let file = postmanEnvCollection.files[0];
     let reader = new FileReader();
     envCollection = null;
-    reader.onload = function(e) {
+    reader.onload = function (e) {
       if (collection) {
-        $('#toolSelection').val("");
-        $('#toolSelection').material_select();
-        //remove downlaod button
-        $('#downloadFile').remove();
-        $('#dakiyaGeneratedScript').hide();
-        $('#dakiyaHeader').show();
+        toolSelectionDefault();
       }
 
       envCollection = JSON.parse(reader.result).values;
@@ -48,23 +38,14 @@ window.onload = function() {
     reader.readAsText(file);
   });
 
-  collectionInput.addEventListener('change', function(e) {
-    //default the status
-    $('#dakiyaGeneratedScript').hide();
-    $('#dakiyaHeader').show();
-
-    //remove downlaod button
-    $('#downloadFile').remove();
-
-    //default tool selection.
+  collectionInput.addEventListener('change', function (e) {
+    // default tool selection.
     fileName = collectionInput.files[0].name.replace('.json', '');
     let file = collectionInput.files[0];
     let reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
       dakiyaItems = [];
-      artilleryTarget = null;
-      $('#toolSelection').val("");
-      $('#toolSelection').material_select();
+      toolSelectionDefault();
 
       collection = reader.result;
       filterPostmanJson();
@@ -73,60 +54,58 @@ window.onload = function() {
   });
 }
 
+document.querySelector('#relativeUrl').addEventListener('change', function (e) {
+  toolSelectionDefault();
+})
 
-function filterPostmanJson() {
-  //if(typeof collection !== 'object' ) collection = JSON.parse(collection);
-  if(collection.constructor !== Object ) collection = JSON.parse(collection);
+function toolSelectionDefault () {
+  $('#toolSelection').val('');
+  $('#toolSelection').material_select();
+}
+
+function filterPostmanJson () {
+  if (collection.constructor !== Object ) collection = JSON.parse(collection);
   if (collection.info && collection.info.name) {
     collectionName = collection.info.name;
   }
 
-  //check json is postman schema v2 and above compliant.
+  // check json is postman schema v2 and above compliant.
   if (collection.item) {
-    let item = processPostmanItem(collection.item);
+    processPostmanItem(collection.item);
   } else {
     $('#modal3').openModal();
   }
-
 }
 
-
-function processPostmanItem(item) {
+function processPostmanItem (item) {
   item.forEach(function (data) {
     let items = filterPostmanItems(data);
     if (items) dakiyaItems.push(items);
   });
 }
 
-
-function convertPostman(selection){
-  if(collection){
+function convertPostman (selection) {
+  if (collection) {
     tool = selection;
 
     if (tool === 'artillery') {
       artillery(dakiyaItems);
     }
     if (tool === 'gatling') {
-      //gatling(dakiyaItems);
-      $('#modal1').openModal();
+      gatling(dakiyaItems);
     }
     if (tool === 'loadrunner') {
-      //loadrunner(dakiyaItems);
+      // loadrunner(dakiyaItems);
       $('#modal1').openModal();
     }
-
-    htmlDisplay();
-
-  }  else {
+  } else {
     $('#modal2').openModal();
-    $('#toolSelection').val("");
+    $('#toolSelection').val('');
     $('#toolSelection').material_select();
   }
-
-
 }
 
-function filterPostmanItems(item){
+function filterPostmanItems (item) {
   if (item.constructor === Array) {
     processPostmanItem(item);
   } else if (item.constructor === Object) {
@@ -143,11 +122,11 @@ function filterPostmanItems(item){
         }
         item.request = transformRequestData(item.request);
         return item;
-    }
+      }
   }
 }
 
-function transformRequestData(request) {
+function transformRequestData (request) {
   // if request is object
   if (request.url.constructor === Object) {
     let urlObj = request.url;
@@ -156,48 +135,58 @@ function transformRequestData(request) {
       url += urlObj.protocol;
     }
     if (urlObj.host) {
-      //let host = urlObj.host.slice(0, -1);
+      // let host = urlObj.host.slice(0, -1);
       let host = urlObj.host.replace(/\.$/, '');
-      url += '://'+ host;
+      url += `://${host}`;
     }
     if (urlObj.port) {
-      url += ':'+ urlObj.port;
+      url += `:${urlObj.port}`;
     }
     if (urlObj.path) {
-      if(urlObj.path.constructor === String) {
-        url += '/'+ urlObj.path;
+      if (urlObj.path.constructor === String) {
+        url += `/${urlObj.path}`;
       }
-      if(urlObj.path.constructor === Array) {
-        //do something
+      if (urlObj.path.constructor === Array) {
+        // do something
       }
     }
     if (urlObj.query && urlObj.query.length > 0) {
-      //do something
+      let queryParams = urlObj.query;
+      let urlQuery = '';
+      queryParams.forEach(function (params) {
+        if (!urlQuery) {
+          urlQuery = `?${params.key}=${params.value}`;
+        } else {
+          urlQuery = `${urlQuery}&${params.key}=${params.value}`;
+        }
+      });
+      url += `${urlQuery}`;
+      // do something
     }
     if (urlObj.hash) {
-      //do something
+      // do something
     }
     if (urlObj.variables && urlObj.variables.length > 0) {
-      //do something
+      // do something
     }
 
     request.url = url;
   }
 
   if (request.header) {
-      if (request.header.constructor === String) {
+    if (request.header.constructor === String) {
       let headersArray = request.header.split('\n');
       let headersObj = {};
-      headersArray.forEach(function(headers){
+      headersArray.forEach(function (headers) {
         if (headers) {
           let keyValue = headers.split(': ');
-          headersObj[keyValue[0]] = ''+keyValue[1]+'';
+          headersObj[keyValue[0]] = keyValue[1];
         }
       });
       request.header = headersObj;
     } else if (request.header.constructor === Array) {
       let headersObj = {};
-      request.header.forEach(function(arrayItem){
+      request.header.forEach(function (arrayItem) {
         headersObj[arrayItem.key] = arrayItem.value;
       });
       request.header = headersObj;
@@ -211,8 +200,8 @@ function transformRequestData(request) {
   // process body parameters
   if (request.body) {
     let body = request.body;
-    let requestBody = {};
-    let bodyType;
+    // let requestBody = {};
+    // let bodyType;
     for (let key in body) {
       if (body.hasOwnProperty(key) && key !== 'mode') {
         let bodyObj = body[key];
@@ -223,19 +212,18 @@ function transformRequestData(request) {
 
         // if postman body is urlencoded or formdata
         if (key === 'urlencoded' || key === 'formdata') {
-            if (bodyObj.length > 0) {
-              // set the body type appropriately.
-              let bodyType;
-
-              if (key === 'urlencoded') {
-                bodyType = 'form';
-              } else {
-                bodyType = 'formdata';
-              }
-              request[bodyType] = {};
-              bodyObj.forEach(function(obj){
-                request[bodyType][obj.key] = obj.value;
-              });
+          if (bodyObj.length > 0) {
+            // set the body type appropriately.
+            let bodyType;
+            if (key === 'urlencoded') {
+              bodyType = 'form';
+            } else {
+              bodyType = 'formdata';
+            }
+            request[bodyType] = {};
+            bodyObj.forEach(function (obj) {
+              request[bodyType][obj.key] = obj.value;
+            });
           }
           // delete the request.body property as the transformation takes place.
           delete request.body;
@@ -243,43 +231,53 @@ function transformRequestData(request) {
       }
     }
   }
-
   return replaceEnvVariablesInRequest(request);
-  //return request;
 }
 
-function htmlDisplay(){
-  if (scriptObject) {
-    let formatScriptObj = JSON.stringify(scriptObject, null, 1);
-    fileDisplayArea.innerText = formatScriptObj;
+function displayModal (data, tool) {
+  let fileExt;
+  let script;
 
-    let data = "text/json;charset=utf-8," + encodeURIComponent(formatScriptObj);
-
-    $('#downloadFile').remove();
-
-    let downloadButton = '<div id="downloadFile"><p></p><a class="btn btn-primary orange darken-2 lighten-1 col s10 waves-effect truncate" href="data:' + data + '" download="'+fileName+'_'+tool+'.json" download<a class="waves-effect waves-light btn white"><i class="material-icons right">file_download</i>download file</a></div>';
-
-    $(downloadButton).insertAfter('#toolSelection');
-    $('#dakiyaGeneratedScript').show();
-    $('#dakiyaHeader').hide();
+  if (tool === 'artillery') {
+    data = JSON.stringify(data, null, 1);
+    script = `data:text/json;charset=utf-8,${encodeURIComponent(data)}`;
+    fileExt = 'json';
+  } else if (tool === 'gatling') {
+    script = `data:,${encodeURIComponent(data)}`;
+    fileExt = 'scala'
   }
+
+  let file = `${fileName}_${tool}.${fileExt}`;
+
+  $(`#download${tool}Header`).remove();
+  $(`#download${tool}Footer`).remove();
+  let scriptDisplay = document.querySelector(`#${tool}ScriptDisplay`);
+  scriptDisplay.innerHTML = data;
+  Prism.highlightAll();
+
+  let downloadButtonHeader = `<a id="download${tool}Header" class="right btn orange darken-2 lighten-1 col waves-effect truncate" href="${script}" download="${file}"<a class="waves-effect waves-light btn white"><i class="material-icons right">file_download</i>download</a>`;
+
+  let downloadButtonFooter = `<a id="download${tool}Footer" class="btn btn-primary orange darken-2 lighten-1 col waves-effect truncate" href="${script}" download="${file}"<a class="waves-effect waves-light btn white"><i class="material-icons right">file_download</i>download</a>`;
+
+  $(`#${tool}Modal .modal-header`).prepend(downloadButtonHeader);
+  $(`#${tool}Modal .modal-footer`).append(downloadButtonFooter);
+
+  $(`#${tool}Modal`).openModal();
 }
 
-function artillery(items) {
+function artillery (items) {
+  let relativeUrl = $('#relativeUrl').prop('checked');
   let artilleryFlow = [];
-  items.forEach(function(item){
+  let baseUrl = '';
+  items.forEach(function (item) {
     let request = item.request;
-    // check of pre-request script from postman and configure for inline variables in artillery.
-    // check of script from postman and capture variables.
-
-
     // check if the request method is supported by artillery if not skip.
-    let artillerySupportedMethods = ['GET', 'POST', 'PUT', "DELETE"];
+    let artillerySupportedMethods = ['GET', 'POST', 'PUT', 'DELETE'];
     if (artillerySupportedMethods.indexOf(request.method) === -1) {
       return null;
     }
 
-    //initialize request method as object
+    // initialize request method as an object
     let artilleryRequest = {};
     let method;
 
@@ -289,21 +287,19 @@ function artillery(items) {
       artilleryRequest[method] = {}
     };
 
-    //get hostname
-    let parser = document.createElement('a');
-    parser.href = request.url;
-    if (!artilleryTarget) artilleryTarget = parser.protocol + '//' + parser.host;
-
-    //check if collection has multiple hostname and make target as the one with maximum occurance
+    let url = request.url;
+    if (relativeUrl) {
+      if (!baseUrl) baseUrl = getHostName(url);
+      url = url.replace(baseUrl, '');
+    }
 
     // transform url
-    let newURL = request.url.replace (/^[^#]*?:\/\/.*?(\/.*)$/, '$1');
-    //if (request.url) artilleryRequest[method].url = request.url;
-    if (request.url) artilleryRequest[method].url = newURL;
+    // if (request.url) artilleryRequest[method].url = request.url;
+    if (request.url) artilleryRequest[method].url = url;
 
-    //transform auth
+    // transform auth
     if (request.auth) {
-      let artillerySupportedHawk = ["authId", "authKey", "algorithm", "user", "nonce"];
+      let artillerySupportedHawk = ['authId', 'authKey', 'algorithm', 'user', 'nonce'];
       let authType;
       let auth = request.auth;
       let authObj = {};
@@ -320,92 +316,62 @@ function artillery(items) {
       artilleryRequest[method][authType] = authObj;
     }
 
-    //transform headers
+    // transform headers
     if (request.header) {
       let headers = {};
-      for(let key in request.header) {
+      for (let key in request.header) {
         headers[key.toLowerCase()] = request.header[key];
       }
       artilleryRequest[method].headers = headers;
     }
 
-    if(request.hasOwnProperty('body')){
+    if (request.hasOwnProperty('body')) {
       if (artilleryRequest[method].headers && 'content-type' in artilleryRequest[method].headers && artilleryRequest[method].headers['content-type'].includes('application/json')) {
-        //add new property json and remove body property.
+        // add new property json and remove body property.
         artilleryRequest[method]['json'] = JSON.parse(request.body);
       } else {
-        //else do something with this body
+        // else do something with this body
         artilleryRequest[method]['body'] = request.body;
       }
     }
 
-    if(request.hasOwnProperty('form')){
+    if (request.hasOwnProperty('form')) {
       artilleryRequest[method]['form'] = request.form;
     }
 
-    if(request.hasOwnProperty('formdata')){
+    if (request.hasOwnProperty('formdata')) {
       artilleryRequest[method]['form'] = request.formdata;
-    }
-
-    //TODO scan for test scripts and do what is neccessary
-    if (item.event && item.event.constructor === Array) {
-      item.event.forEach(function(events){
-        if (events.script && events.script.exec) {
-          // if listen is test, capture as variable
-
-          //if listen is prerequest store as global variable.
-
-          let scriptExec = events.script.exec;
-          // if script is string
-          if (scriptExec.constructor === String) {
-          } else if (scriptExec.constructor === Array) {
-            scriptExec.forEach(function (script) {
-            })
-          }
-
-        }
-        //if environment variables are set here do not replace with env variables collection values.
-      });
     }
     artilleryFlow.push(artilleryRequest);
   });
-  scriptObject = generateArtilleryConfig(artilleryFlow)
+  let scriptObject = generateArtilleryConfig(artilleryFlow, baseUrl);
+  displayModal(scriptObject, 'artillery');
 }
 
-function generateArtilleryConfig(flow){
+function generateArtilleryConfig (flow, baseUrl) {
   let defaultArtilleryConfig = {
-    "config": {
-      "target": artilleryTarget,
-      "phases": [],
+    config: {
+      phases: []
     },
-    "variables":{},
-    "scenarios": [
+    variables: {},
+    scenarios: [
       {
-        "name": collectionName || fileName ,
-        "flow": flow
+        name: collectionName || fileName,
+        flow: flow
       }
     ]
   };
   if (flow.length > 0) {
+    if (baseUrl) defaultArtilleryConfig.config.target = baseUrl;
     return defaultArtilleryConfig;
   } else {
     return null;
-    }
-
+  }
 }
 
-
-function replaceEnvVariablesInRequest(request) {
+function replaceEnvVariablesInRequest (request) {
   for (let key in request) {
     if (request.hasOwnProperty(key) && key!== 'description') {
-
-      function replaceArray(array){
-        array.forEach(function (obj) {
-          array[obj.key] = replaceStringWithEnvVariables(obj.value);
-        });
-        return array;
-      }
-
       if (typeof request[key] === 'string') {
         request[key] = replaceStringWithEnvVariables(request[key]);
       }
@@ -417,21 +383,27 @@ function replaceEnvVariablesInRequest(request) {
       if (request[key].constructor === Object) {
         replaceEnvVariablesInRequest(request[key]);
       }
-
     }
   }
   return request;
 }
 
-function replaceStringWithEnvVariables(stringValue) {
+function replaceArray (array) {
+  array.forEach(function (obj) {
+    array[obj.key] = replaceStringWithEnvVariables(obj.value);
+  });
+  return array;
+}
+
+function replaceStringWithEnvVariables (stringValue) {
   let regex = /\{\{(.*)\}\}/;
 
   let envVariable = stringValue.match(regex);
   if (envVariable && envCollection) {
     envVariable = envVariable[1];
-    //let result = envCollection.find(x => x.key === envVariable).value;
+    // let result = envCollection.find(x => x.key === envVariable).value;
     let findResult = envCollection.find(x => x.key === envVariable);
-    let result = findResult? findResult.value : null;
+    let result = findResult ? findResult.value : null;
     if (result) {
       return stringValue.replace(regex, result);
     } else {
@@ -442,19 +414,136 @@ function replaceStringWithEnvVariables(stringValue) {
   }
 }
 
-function replaceWithTestVariables(stringValue) {
-  let regex = /\{\{(.*)\}\}/;
+function gatling (items) {
+  let relativeUrl = $('#relativeUrl').prop('checked');
+  let gatlingScenarioName = collectionName || fileName;
+  let gatlingHttpRequest = '';
+  let gatlingTestClass = `import io.gatling.core.Predef._\nimport io.gatling.http.Predef._\n\nclass Dakiya extends Simulation {`;
+  // classname = ${gatlingScenarioName.replace(/\s/g,"_")}
 
-  let envVariable = stringValue.match(regex);
-  if (envVariable && envCollection) {
-    envVariable = envVariable[1];
-    let result = envCollection.find(x => x.key === envVariable).value;
-    if (result) {
-      return stringValue.replace(regex, result);
-    } else {
-      return stringValue;
+  let gatlingScript = `val scn = scenario("${gatlingScenarioName}")\n`;
+  let baseURL = '';
+  items.forEach(function (item) {
+    let name = item.name || item.request.url;
+    let request = item.request;
+    let method = request.method.toLowerCase();
+
+    let gatlingSupportedMethods = ['get', 'post', 'put', 'delete', 'head', 'patch', 'options'];
+    if (gatlingSupportedMethods.indexOf(method) === -1) {
+      return null;
     }
-  } else {
-    return stringValue;
+
+    let url = request.url;
+    // if base url is true change the url
+    url = url.replace(/{{(.*)}}/g, '$($1)');
+    if (relativeUrl) {
+      if (!baseURL) baseURL = getHostName(url);
+      url = url.replace(baseURL, '');
+    }
+    gatlingHttpRequest = `\t.exec(http("${name}")\n\t\t.${method}("${url}")`;
+
+    // handle authentication
+    if (request.auth) {
+      let auth = request.auth;
+      let gatlingAuth = '';
+      let authType='';
+      for (let key in auth) {
+        if (auth.hasOwnProperty(key) && key !== 'type') {
+          if (key === 'basic') {
+            authType = 'basicAuth';
+          } else if (key === 'digest') {
+            authType = 'digestAuth';
+          }
+          // TODO iterate through the object to get
+          let authKey = auth[key].username;
+          let authValue = auth[key].password;
+          if (authType && authKey && authValue) gatlingAuth = `${gatlingAuth}\t.${authType}("${authKey}", "${authValue}")\n\t`;
+        }
+      }
+      // remove last trailing newline from the gatlingHeaders;
+      gatlingAuth = removeTrailingNewline(gatlingAuth);
+      gatlingHttpRequest = `${gatlingHttpRequest}\n\t${gatlingAuth}`;
+    }
+
+    let headers = request.header;
+    if (headers) {
+      let gatlingHeaders = '';
+      for (let key in headers) {
+        if (headers.hasOwnProperty(key)) {
+          let headerKey = stringStringify(key);
+          let headerValue = stringStringify(headers[key]);
+          gatlingHeaders = `${gatlingHeaders}\t.header("${headerKey}", "${headerValue}")\n\t`;
+        }
+      }
+      // remove last trailing newline from the gatlingHeaders;
+      gatlingHeaders = removeTrailingNewline(gatlingHeaders)
+      gatlingHttpRequest = `${gatlingHttpRequest}\n\t${gatlingHeaders}`;
+    }
+
+    // handle form
+    let form = request.form;
+    if (form) {
+      let gatlingForm = '';
+      for (let key in form) {
+        if (form.hasOwnProperty(key)) {
+          let formKey = stringStringify(key);
+          let formValue = stringStringify(form[key]);
+          gatlingForm = `${gatlingForm}\t.formParam("${formKey}", "${formValue}")\n\t`;
+        }
+      }
+      // remove last trailing newline from the gatlingForm;
+      gatlingForm = removeTrailingNewline(gatlingForm)
+      gatlingHttpRequest = `${gatlingHttpRequest}\n\t${gatlingForm}`;
+    }
+
+    // handle raw body
+    let body = request.body;
+    if (body) {
+      // align the body.
+      body = body.replace(/\n\t/g, '\n').replace(/\n/g, "\n\t\t").replace(/{{(.*)}}/g, '$($1)');
+      let gatlingBody = `.body(StringBody("""${body}""")).asJSON`;
+      gatlingHttpRequest = `${gatlingHttpRequest}\n\t\t${gatlingBody}`;
+    }
+
+    // handle multipart requests
+    let formData = request.formdata;
+    if (formData) {
+      formData = JSON.stringify(formData);
+      formData = formData.replace(/\n\t/g, "\n").replace(/\n/g, "\n\t\t").replace(/{{(.*)}}/g, '$($1)');
+      let gatlingFormData = `.bodyPart(StringBody("""${formData}"""))`;
+      gatlingHttpRequest = `${gatlingHttpRequest}\n\t\t${gatlingFormData}`;
+    }
+
+    // closing exec
+    gatlingHttpRequest = `${gatlingHttpRequest}\n\t)`;
+    gatlingScript = `${gatlingScript}${gatlingHttpRequest}\n`;
+  });
+
+  let gatlingBaseUrl = '';
+  if (baseURL) {
+    gatlingBaseUrl = `val httpConf = http.baseURL("${baseURL}")\n`;
   }
+
+  let gatlingClass = `${gatlingTestClass}\n${gatlingBaseUrl}${gatlingScript}}`;
+  displayModal(gatlingClass, 'gatling');
+}
+
+function removeTrailingNewline (string) {
+  return string.replace(/\n\t$/, '');
+}
+
+function stringStringify (string) {
+  // convert postman variable to gatling variables
+  string = string.replace(/{{(.*)}}/g, '$($1)');
+  return string.replace(/\"/g,"\\\"");
+}
+
+function gatlingFormatString (string) {
+  return string.replace(/\n\t/g, '\n').replace(/\n/g, '\n\t\t');
+}
+
+function getHostName (url) {
+  let parser = document.createElement('a');
+  parser.href = url;
+  return parser.protocol + '//' + parser.host;
 }

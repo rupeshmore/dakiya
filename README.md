@@ -4,10 +4,17 @@ Dakiya (डाकिया) means postman.
 
 Dakiya collects [Postman](https://www.getpostman.com) collections, sorts and delivers transformed scripts.
 
-NOTE: This is an attempt to provide conversion utility for postman api's. This project is in it's early stage. It has not been tested in complex postman api's.
+NOTE: This is an attempt to provide conversion utility for postman api's. This project is in its early stage. It has not been tested in complex postman api's.
 
-## Demo
-[Dakiya Demo](https://dakiya-ykwpldbeqo.now.sh)
+## Hosted
+Start Using Dakiya Now
+
+[https://dakiya.now.sh](https://dakiya.now.sh)
+
+[https://dakiya.herokuapp.com/](https://dakiya.herokuapp.com/)
+
+## Video Demo
+[Dakiya Demo](https://youtu.be/ll9nneFegL8)
 
 ## Getting Started
 
@@ -25,37 +32,37 @@ NOTE: This is an attempt to provide conversion utility for postman api's. This p
 ```
   1. Postman environment variables collection. (optional)
   2. Postman api collections. (mandatory)
-  3. select the load test tool for conversion.
-  4. Download script file (or copy from the browser).
+  3. Select if base url is needed in the script. (off by default)
+  4. Select the load test tool for conversion.
+  5. Download script file (or copy from the browser).
 ```
 
 ## Features
-1. No installation: Convert postman api's using browser.
+1. No installation: Convert postman api's using the browser.
 2. Secure: No uploading of collections to any server.
 3. Supports Postman folders.
 4. Add postman environment collection and Dakiya replaces the variables in the script.
-5. Convert the collections to Artillery load testing tool script.
+5. Convert postman collections to Artillery load testing script.
+6. Convert postman collections to Gatling load testing script.
 
-## What about postman variables?
+## Postman variables
+Dakiya converts the postman variables syntax to the load testing tool syntax.
+
 1. ***Environment variables***: Dakiya replaces variables within collection when environment collection is supplied.
 
-2. ***Data variables***: Are used within postman collections by test runner. Look at the respective tool documentation on how to replace data variables during test execution.
 
-## URL as object in Postman Collection
-Dakiya has limited support for postman url as an object`{}`. This is due to limited collection examples.
-
-## Auth support in Dakiya
-Currently supporting only `Basic` conversion. Other authentication/authorization will be provided as it is from postman collection.
+## Auth conversion in Dakiya
+1. **Artillery** - currently supporting only `Basic` auth. Other authentication/authorization will be provided as it is from postman collection.
+2. **Gatling** - currently supporting `Basic` & `Digest` auth.
 Look at the tool documentation to make relevant changes.
 
 ## More Info
-1. Dakiya assumes a valid postman json schema is supplied. Take a look a this blog on how to validate your collection [http://blog.getpostman.com/2015/07/02/introducing-postman-collection-format-schema/]
+1. Dakiya assumes a valid postman json schema is supplied. Take a look this blog on how to validate your collection [http://blog.getpostman.com/2015/07/02/introducing-postman-collection-format-schema/]
 2. The app has been created with limited collection examples and postman documentation. If there are bugs kindly log issues.
 
-## TODO
-1. Full support for postman url as an object.
-2. [Gatling](http://gatling.io/#/) load testing tool script generation.
-3. [Loadrunner](http://www8.hp.com/nz/en/software-solutions/loadrunner-load-testing/) load testing tool script generation.
+## RoadMap
+1. [Loadrunner](http://www8.hp.com/nz/en/software-solutions/loadrunner-load-testing/) load testing tool script generation.
+2. Dakiya has limited support for postman url as an object. This is due to limited collection examples.
 
 ## License
 MIT License

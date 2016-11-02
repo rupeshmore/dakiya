@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="css/material-icon-fonts.css" >
     <link rel="stylesheet" href="css/materialize.min.css">
     <link rel="stylesheet" href="css/ribbons.css">
+    <link rel="stylesheet" href="css/prism.css" />
     <style>
     #fileDisplayArea {
       margin-top: 2em;
@@ -11,16 +12,20 @@
       overflow-x: auto;
     }
     h1 {
-      font-family: monospace;;
+      font-family: monospace;
+    }
+    .modal {
+      max-height: 88%;
+      width: 75%
+    }
+    .switch label input[type=checkbox]:checked+.lever:after, .switch label input[type=checkbox]:checked+.lever {
+      background-color: #ff9800;
     }
   </style>
   </head>
   <body>
     <div id="app">
     <!-- Navbar goes here -->
-    <!--<div class="row amber lighten-1">
-      <center><h1>Dakiya</h1></center>
-    </div>-->
     <!-- Page Layout here -->
     <div class="row">
 
@@ -57,66 +62,70 @@
       </div>
       </div>
 
-      <br>
+      <!-- relative url switch -->
+      <div class="row">
+          <div class="switch col s12">
+              <p class="orange-text">Create Base Url</p>
+               <label>
+                 Off
+                 <input name='switch_Activate' type='hidden' value='0'>
+                 <input id='relativeUrl' name='switch_Activate' type='checkbox' value='1'>
+                 <span class="lever"></span>
+                 On
+               </label><p>&#10548;
+               <small class="resize-note"> Choose this option if all the url's in the collection have same domain/hostname.</small></p>
+           </div>
+      </div>
+
+      <p></p>
       <div class="input-field col s12">
-      <select id="toolSelection" class="bottom" onchange="convertPostman(this.value)">
-        <option value="" selected>Choose Tool</option>
+      <select id="toolSelection" class="bottom orange-text" onchange="convertPostman(this.value)">
+        <option value="" selected class="">Choose Tool</option>
         <option value="artillery">Artillery</option>
-        <option value="gatling">Gatling (coming soon)</option>
-        <option value="loadrunner">Loadrunner (if legal)</option>
+        <option value="gatling">Gatling</option>
+        <option value="loadrunner">Loadrunner (if legal, coming soon)</option>
       </select>
       <label>Tool Selection</label>
     </div>
+  </div>
 
-
-    </div>
     <div class="col s12 m8 l9"> <!-- Note that "m8 l9" was added -->
           <div class="ribbon right green" style="z-index:10">
             <a href="https://github.com/rupeshmore/dakiya">Star &starf; me on GitHub</a>
           </div>
-          <!--
-          <div id="dakiyaGeneratedHeader" class="collection">
-                <h5 id="fileDisplayHeader"></h5>
-          </div>
-        -->
 
-          <div id="dakiyaGeneratedScript" class="collection">
-                <pre id="fileDisplayArea"><pre>
-          </div>
           <ul id="dakiyaHeader" class="collection" style="margin:margin-right:40px">
             <div class="col s12" style="padding-left:75px;padding-right:75px">
-              <h1 class="header center orange-text">Dakiya</h1>
+              <h1 class="header center orange-text">Dakiya<img src="img/dakiya.png" height="69" class="center" style="vertical-align:bottom;"></img></h1>
               <div class="row center">
-                <h5 class="header col s12 bold">transforms <a href="https://www.getpostman.com" target="_blank">Postman</a> collections</h5>
+                <h5 class="header col s12 bold">transforms <a href="https://www.getpostman.com" target="_blank">Postman</a> collections to load testing scripts.</h5>
               </div>
               <div class="row">
-                <div class="col s6">
+                <div class="col m12 l6">
                     <ul class="light">
                       <li class="collection-header italic"><h5>Features</h5></li>
                       <li><span class="green-text">&#10004;</span> <strong>Secure:</strong> All your collections are not uploaded to the server.</li><p></p>
-                      <li><span class="green-text">&#10004;</span> <strong>No Installation:</strong> Runs in the browser.<li><p></p>
+                      <li><span class="green-text">&#10004;</span> <strong>No Installation:</strong> Runs in the browser using javascript.<li><p></p>
                       <li><span class="green-text">&#10004;</span> Add postman <mark class="orange">environment</mark> collection and dakiya will replace the variables in the script.<li><p></p>
                       <li><span class="green-text">&#10004;</span> Supports postman collections with multiple folders.<li><p></p>
-                      <li><span class="green-text">&#10004;</span> Convert to artillery scripts.<li><p></p>
-                      <li><span class="green-text">&#10004;</span> Convert to gatling scripts. (coming soon)<li><p></p>
+                      <li><span class="green-text">&#10004;</span> Convert to <a href="https://artillery.io" target="_blank">Artillery</a> load testing scripts.<li><p></p>
+                      <li><span class="green-text">&#10004;</span> Convert to <a href="http://gatling.io/" target="_blank">Gatling</a> load testing scripts.<li><p></p>
                       <li><span class="green-text">&#10004;</span> Convert to Load Runner scripts. (If legal, coming soon)<li><p></p>
-
                     </ul>
                 </div>
-                <div class="col s6">
+                <div class="col m12 l6">
                     <ul class="light">
                       <li class="collection-header"><h5>Getting Started</h5></li>
                       <li><span>&bull;</span> Upload Postman environment collection.(optional)</li><p></p>
                       <li><span>&bull;</span> Upload Postman api collection.(mandatory)</li><p></p>
-                      <li><span>&bull;</span> Select the tool option to convert.</li><p></p>
+                      <li><span>&bull;</span> Create full url or base url with following url's as relative to base.<br>&nbsp;(first url from postman collection is always the base url)</li>&nbsp;<small class="resize-note">tip: choose this option if all the url's in the collection have same domain/hostname.</small><p></p>
+                      <li><span>&bull;</span> Select the tool to convert.</li><p></p>
                       <li><span>&bull;</span> Download the converted script.</li><p></p>
                     </ul>
                 </div>
               </div>
               <br>
               <div class="row center">
-                <!--<p class="header col s12 bold">Click here for <a class="center" href="./README.md" target="_blank">Dakiya README.md</a></p>
-              </div>-->
               <p class="light center">Note: Dakiya only supports PostMan collections v2 and upwards.</p>
             </div>
           </ul>
@@ -124,7 +133,6 @@
           <div id="modal1" class="modal">
             <div class="modal-content">
               <h4>This feature is coming soon</h4>
-              <!--<p>This feature is coming soon</p>-->
             </div>
             <div class="modal-footer">
               <a class=" modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
@@ -148,30 +156,62 @@
               <a class=" modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
             </div>
           </div>
-
+          <div id="artilleryModal" class="modal">
+            <div class="modal-content">
+              <div class="modal-header">
+              <h4 class="modal-title">Artillery script by Dakiya</h4>
+            </div>
+            <div class="modal-body">
+              <pre><code id="artilleryScriptDisplay" class="language-json"></code></pre>
+          </div>
+            </div>
+            <div class="modal-footer">
+              <a class=" modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+            </div>
+          </div>
+          <div id="gatlingModal" class="modal">
+            <div class="modal-content">
+              <div class="modal-header">
+              <h4 class="modal-title">Gatling script by Dakiya</h4>
+            </div>
+            <div class="modal-body">
+              <pre><code id="gatlingScriptDisplay" class="language-scala"></code></pre>
+            </div>
+            </div>
+            <div class="modal-footer">
+              <a class=" modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+            </div>
+          </div>
     </div>
 
     </div>
+    <footer class="page-footer white">
+      <div class="container center">
+      Made with &hearts; in New Zealand | &copy; Rupesh More | <a href=https://github.com/rupeshmore white-text>Contact</a>
+      <!--Made with &hearts; by Rupesh More | <a href=https://github.com/rupeshmore white-text>Contact</a>-->
+    </div>
+    </footer>
     </div>
     <script src="js/jquery-2.2.3.min.js"></script>
     <script src="js/materialize.min.js"></script>
-    <script type="text/javascript">
-    $(document).ready(function() {
-      Materialize.updateTextFields();
-      $('#toolSelection').material_select();
-      $('#dakiyaGeneratedHeader').hide();
-      $('#dakiyaGeneratedScript').hide();
-
-    });
-    //Analytics
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-85613401-2', 'auto');
-    ga('send', 'pageview');
-    </script>
     <script src="js/dakiya.js"></script>
+    <script src="js/prism.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        Materialize.updateTextFields();
+        $('#toolSelection').material_select();
+        //$('#dakiyaGeneratedHeader').hide();
+        //$('#dakiyaGeneratedScript').hide();
+
+      });
+      //Analytics
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-85613401-2', 'auto');
+      ga('send', 'pageview');
+    </script>
   </body>
 <html>
