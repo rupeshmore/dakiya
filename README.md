@@ -50,7 +50,6 @@ Dakiya converts the postman variables syntax to the load testing tool syntax.
 
 1. ***Environment variables***: Dakiya replaces variables within collection when environment collection is supplied.
 
-
 ## Auth conversion in Dakiya
 1. **Artillery** - currently supporting only `Basic` auth. Other authentication/authorization will be provided as it is from postman collection.
 2. **Gatling** - currently supporting `Basic` & `Digest` auth.
@@ -63,6 +62,9 @@ Look at the tool documentation to make relevant changes.
 ## RoadMap
 1. [Loadrunner](http://www8.hp.com/nz/en/software-solutions/loadrunner-load-testing/) load testing tool script generation.
 2. Dakiya has limited support for postman url as an object. This is due to limited collection examples.
+
+## Thanks to [Stuff](http://www.stuff.co.nz/)
+Dakiya is built during technology labs working at stuff.co.nz
 
 ## License
 MIT License

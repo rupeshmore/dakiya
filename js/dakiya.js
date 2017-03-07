@@ -130,7 +130,7 @@ function transformRequestData (request) {
   // if request is object
   if (request.url.constructor === Object) {
     let urlObj = request.url;
-    let url='';
+    let url = '';
     if (urlObj.protocol) {
       url += urlObj.protocol;
     }
@@ -272,7 +272,7 @@ function artillery (items) {
   items.forEach(function (item) {
     let request = item.request;
     // check if the request method is supported by artillery if not skip.
-    let artillerySupportedMethods = ['GET', 'POST', 'PUT', 'DELETE'];
+    let artillerySupportedMethods = ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS'];
     if (artillerySupportedMethods.indexOf(request.method) === -1) {
       return null;
     }
@@ -326,7 +326,7 @@ function artillery (items) {
     }
 
     if (request.hasOwnProperty('body')) {
-      if (artilleryRequest[method].headers && 'content-type' in artilleryRequest[method].headers && artilleryRequest[method].headers['content-type'].includes('application/json')) {
+      if (artilleryRequest[method].headers && 'content-type' in artilleryRequest[method].headers && artilleryRequest[method].headers['content-type'].includes('application/json') && isJson(request.body)) {
         // add new property json and remove body property.
         artilleryRequest[method]['json'] = JSON.parse(request.body);
       } else {
@@ -396,7 +396,7 @@ function replaceArray (array) {
 }
 
 function replaceStringWithEnvVariables (stringValue) {
-  let regex = /\{\{(.*)\}\}/;
+  let regex = /\{\{(.*?)\}\}/;
 
   let envVariable = stringValue.match(regex);
   if (envVariable && envCollection) {
@@ -435,7 +435,7 @@ function gatling (items) {
 
     let url = request.url;
     // if base url is true change the url
-    url = url.replace(/{{(.*)}}/g, '$($1)');
+    url = url.replace(/{{(.*?)}}/g, '$($1)');
     if (relativeUrl) {
       if (!baseURL) baseURL = getHostName(url);
       url = url.replace(baseURL, '');
@@ -498,9 +498,9 @@ function gatling (items) {
 
     // handle raw body
     let body = request.body;
-    if (body) {
+    if (body && body instanceof String) {
       // align the body.
-      body = body.replace(/\n\t/g, '\n').replace(/\n/g, "\n\t\t").replace(/{{(.*)}}/g, '$($1)');
+      body = body.replace(/\n\t/g, '\n').replace(/\n/g, "\n\t\t").replace(/{{(.*?)}}/g, '$($1)');
       let gatlingBody = `.body(StringBody("""${body}""")).asJSON`;
       gatlingHttpRequest = `${gatlingHttpRequest}\n\t\t${gatlingBody}`;
     }
@@ -509,7 +509,7 @@ function gatling (items) {
     let formData = request.formdata;
     if (formData) {
       formData = JSON.stringify(formData);
-      formData = formData.replace(/\n\t/g, "\n").replace(/\n/g, "\n\t\t").replace(/{{(.*)}}/g, '$($1)');
+      formData = formData.replace(/\n\t/g, "\n").replace(/\n/g, "\n\t\t").replace(/{{(.*?)}}/g, '$($1)');
       let gatlingFormData = `.bodyPart(StringBody("""${formData}"""))`;
       gatlingHttpRequest = `${gatlingHttpRequest}\n\t\t${gatlingFormData}`;
     }
@@ -546,4 +546,13 @@ function getHostName (url) {
   let parser = document.createElement('a');
   parser.href = url;
   return parser.protocol + '//' + parser.host;
+}
+
+function isJson (str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
 }
